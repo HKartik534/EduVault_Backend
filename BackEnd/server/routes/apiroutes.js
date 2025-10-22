@@ -4,6 +4,8 @@ const bookController=require("../apis/book/bookController")
 const semController=require("../apis/sem/semController")
 const materialController=require("../apis/material/materialController")
 const userController=require("../apis/auth/userController")
+const enquiryController=require("../apis/enquiry/enquiryController")
+
 
 //course routes
 routes.post("/course/add",courseController.add)
@@ -49,6 +51,13 @@ routes.post("/material/delete",materialController.deleteOne)
 //user routes
 routes.post("/user/add",userController.register)
 routes.post("/user/login",userController.login)
+
+//enquiry routes
+routes.post("enquiry/add",enquiryController.add)
+
+// token routes
+routes.use(require("../middleware/tokkenchecker"))
+
 
 
 

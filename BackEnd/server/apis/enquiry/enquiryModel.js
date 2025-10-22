@@ -10,4 +10,4 @@ const enquirySchema= new mongoose.Schema({
     
 })
 
-module.exports=new mongoose.model("courses",courseSchema)
+module.exports=new mongoose.model("enquiries",enquirySchema)
