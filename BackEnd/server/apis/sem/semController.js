@@ -4,9 +4,6 @@ const add=(req,res)=>{
     if(!req.body.name){
         errMsg.push("Name is required")
     }
-    if(!req.body.image){
-        errMsg.push("image is required")
-    }
     if(!req.body.description){
         errMsg.push("description is required")
     }
@@ -27,7 +24,6 @@ const add=(req,res)=>{
             if(semdata==null){
                  let semobj=new semModel()
                         semobj.name=req.body.name
-                        semobj.image=req.body.image
                         semobj.description=req.body.description
                         semobj.courseId=req.body.courseId
                         semobj.save()
@@ -173,9 +169,6 @@ const update=(req,res)=>{
         }
         if(req.body.description){
             bookdata.description=req.body.description
-        }
-        if(req.body.image){
-            bookdata.image=req.body.image
         }
         bookdata.save()
         .then((bookdata)=>{

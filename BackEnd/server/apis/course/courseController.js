@@ -1,11 +1,12 @@
 const courseModel=require("./courseModel")
+const {uploadImg} = require("../../utilities/helper")
 const add=(req,res)=>{
     var errMsg=[]
     if(!req.body.name){
         errMsg.push("Name is required")
     }
-    if(!req.body.image){
-        errMsg.push("image is required")
+    if(!req.file){
+        errMsg.push("file is required")
     }
     if(!req.body.description){
         errMsg.push("description is required")
@@ -20,18 +21,34 @@ const add=(req,res)=>{
     }
     else{
         courseModel.findOne({name:req.body.name})
-        .then((coursedata)=>{
+        .then(async(coursedata)=>{
             if(coursedata==null){
                  let courseobj=new courseModel()
                         courseobj.name=req.body.name
-                        courseobj.image=req.body.image
+                        if(req.file){
+                            try{
+                                    // code try
+                                let url =await uploadImg(req.file.buffer)
+                                courseobj.image = url
+                            }
+                            catch(err){
+                                res.send({
+                                    status:400,
+                                    success:false,
+                                    message:err
+                                })
+
+                            }
+                    }
+                        // courseobj.image="course/"+req.file.filename
                         courseobj.description=req.body.description
                         courseobj.save()
                         .then((coursedata)=>{
                             res.send({
                                 status:200,
                                 success:true,
-                                message:"Course added successfully"
+                                message:"Course added successfully",
+                                data:coursedata
                             })
                         })
                         .catch((err)=>{
@@ -67,7 +84,7 @@ const getall=(req,res)=>{
             res.send({
                 status:404,
                 success:false,
-                message:"books do not exist"
+                message:"course do not exist"
             })
         }
         else{

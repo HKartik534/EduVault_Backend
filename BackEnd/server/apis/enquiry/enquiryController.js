@@ -67,5 +67,80 @@ const add=(req,res)=>{
     }
 
 }
+//update and change status
+const update=(req,res)=>{
+    enquiryModel.findOne({_id:req.body._id})
+    .then((bookdata)=>{
+        if(req.body.name){
+            bookdata.name=req.body.name
+        }
+        if(req.body.email){
+            bookdata.email=req.body.email
+        }
+        if(req.body.contact){
+            bookdata.contact=req.body.contact
+        }
+        if(req.body.subject){
+            bookdata.subject=req.body.subject
+        }
+        if(req.body.message){
+            bookdata.message=req.body.message
+        }
+        bookdata.save()
+        .then((bookdata)=>{
+            res.send({
+                status:200,
+                success:true,
+                message:"data updated successfully",
+                data:bookdata
+            })
+        })
+        .catch(()=>{
+            res.send({
+            status:500,
+            success:false,
+            message:"something went wrong"
+        })    
+        })
+    })
+    .catch(()=>{
+        res.send({
+            status:500,
+            success:false,
+            message:"something went wrong"
+        })
+    })
+}
+const changestatus=(req,res)=>{
+    enquiryModel.findOne({_id:req.body._id})
+    .then((bookdata)=>{
+        if(req.body.status){
+            bookdata.status=req.body.status
+        }
+        bookdata.save()
+        .then((bookdata)=>{
+            res.send({
+                status:200,
+                success:true,
+                message:"status changed successfully",
+                data:bookdata
+            })
+        })
+        .catch(()=>{
+            res.send({
+                status:500,
+                success:false,
+                message:"something went wrong"
+            })
+        })
+    })
+    .catch(()=>{
+        res.send({
+            status:500,
+            success:false,
+            message:"something went wrong"
+        })
+    })
+}
 
-module.exports={add}
+module.exports={add,update,changestatus}

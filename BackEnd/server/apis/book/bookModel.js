@@ -4,6 +4,7 @@ const bookSchema= new mongoose.Schema({
     semId:{type:mongoose.Schema.Types.ObjectId,ref:"sems"},
     name:{type:String,default:""},
     type:{type:String,default:""},
+    image:{type:String,default:"noimage.jpg"},
     price:{type:String,default:""},
     description:{type:String,default:""},
     status:{type:Boolean,default:true},

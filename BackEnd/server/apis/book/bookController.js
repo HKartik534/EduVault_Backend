@@ -7,6 +7,9 @@ const add=(req,res)=>{
     if(!req.body.type){
         errMsg.push("image is required")
     }
+    if(!req.file){
+        errMsg.push("file is required")
+    }
     if(!req.body.description){
         errMsg.push("description is required")
     }
@@ -38,6 +41,7 @@ const add=(req,res)=>{
                         bookobj.type=req.body.type
                         bookobj.courseId=req.body.courseId
                         bookobj.semId=req.body.semId
+                        bookobj.image="book/"+req.file.filename
                         bookobj.save()
                         .then((bookdata)=>{
                             res.send({

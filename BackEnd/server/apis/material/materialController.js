@@ -4,7 +4,7 @@ const add=(req,res)=>{
     if(!req.body.title){
         errMsg.push("title is required")
     }
-    if(!req.body.attachment){
+    if(!req.file){
         errMsg.push("attachment is required")
     }
     if(!req.body.description){
@@ -23,7 +23,7 @@ const add=(req,res)=>{
             if(coursedata==null){
                  let materialobj=new materialModel()
                        materialobj.title=req.body.title
-                       materialobj.attachment=req.body.attachment
+                       materialobj.attachment="material/"+req.file.filename
                        materialobj.description=req.body.description
                        materialobj.save()
                         .then((coursedata)=>{
