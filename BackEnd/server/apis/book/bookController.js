@@ -32,7 +32,7 @@ const add=(req,res)=>{
     }
     else{
         bookModel.findOne({name:req.body.name})
-        .then((bookdata)=>{
+        .then(async(bookdata)=>{
             if(bookdata==null){
                  let bookobj=new bookModel()
                         bookobj.name=req.body.name
@@ -41,7 +41,22 @@ const add=(req,res)=>{
                         bookobj.type=req.body.type
                         bookobj.courseId=req.body.courseId
                         bookobj.semId=req.body.semId
-                        bookobj.image="book/"+req.file.filename
+                        // bookobj.image="book/"+req.file.filename
+                         if(req.file){
+                            try{
+                                    // code try
+                                let url =await uploadImg(req.file.buffer)
+                                bookobj.image = url
+                            }
+                            catch(err){
+                                res.send({
+                                    status:400,
+                                    success:false,
+                                    message:err
+                                })
+
+                            }
+                    }
                         bookobj.save()
                         .then((bookdata)=>{
                             res.send({
@@ -196,6 +211,9 @@ const update=(req,res)=>{
         }
         if(req.body.description){
             bookdata.description=req.body.description
+        }
+         if(req.body.image){
+            bookdata.image=req.body.image 
         }
         bookdata.save()
         .then((bookdata)=>{

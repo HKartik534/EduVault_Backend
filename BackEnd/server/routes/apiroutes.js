@@ -45,11 +45,11 @@ routes.post("/course/delete",courseController.deleteOne)
 // const bookupload = multer({ storage: bookstorage })
 
 //book routes
-// routes.post("/book/add",bookupload.single("image"),bookController.add)
+routes.post("/book/add",upload.single("image"),bookController.add)
 routes.post("/book/all",bookController.getall)
 routes.post("/book/single",bookController.getsingle)
 routes.post("/book/pagination",bookController.getpagination)
-routes.post("/book/update",bookController.update)
+routes.post("/book/update",upload.single("image"),bookController.update)
 routes.post("/book/status",bookController.changestatus)
 routes.post("/book/delete",bookController.deleteOne)
 
@@ -79,7 +79,7 @@ routes.post("/sem/delete",semController.deleteOne)
 
 
 //material routes
-// routes.post("/material/add",materialeupload.single("image"),materialController.add)
+routes.post("/material/add",upload.single("image"),materialController.add)
 routes.post("/material/all",materialController.getall)
 routes.post("/material/single",materialController.getsingle)
 routes.post("/material/pagination",materialController.getpagination)

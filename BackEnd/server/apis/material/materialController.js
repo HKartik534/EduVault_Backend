@@ -19,11 +19,26 @@ const add=(req,res)=>{
     }
     else{
        materialModel.findOne({name:req.body.name})
-        .then((coursedata)=>{
+        .then(async(coursedata)=>{
             if(coursedata==null){
                  let materialobj=new materialModel()
                        materialobj.title=req.body.title
-                       materialobj.attachment="material/"+req.file.filename
+                        if(req.file){
+                            try{
+                                    // code try
+                                let url =await uploadImg(req.file.buffer)
+                                materialobj.attachment = url
+                            }
+                            catch(err){
+                                res.send({
+                                    status:400,
+                                    success:false,
+                                    message:err
+                                })
+
+                            }
+                    }
+                    //    materialobj.attachment="material/"+req.file.filename
                        materialobj.description=req.body.description
                        materialobj.save()
                         .then((coursedata)=>{
