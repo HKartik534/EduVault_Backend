@@ -193,7 +193,7 @@ const getpagination=(req,res)=>{
 }
 const update=(req,res)=>{
     bookModel.findOne({_id:req.body._id})
-    .then((bookdata)=>{
+    .then(async(bookdata)=>{
         if(req.body.courseId){
             bookdata.courseId=req.body.courseId
         }
@@ -213,7 +213,20 @@ const update=(req,res)=>{
             bookdata.description=req.body.description
         }
          if(req.body.image){
-            bookdata.image=req.body.image 
+            try{
+                                    // code try
+                                let url =await uploadImg(req.file.buffer)
+                                bookobj.image = url
+                            }
+                            catch(err){
+                                res.send({
+                                    status:400,
+                                    success:false,
+                                    message:err
+                                })
+
+                            }
+            
         }
         bookdata.save()
         .then((bookdata)=>{

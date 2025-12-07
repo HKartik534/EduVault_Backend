@@ -91,6 +91,8 @@ routes.post("/material/delete",materialController.deleteOne)
 //user routes
 routes.post("/user/add",userController.register)
 routes.post("/user/login",userController.login)
+routes.post("/user/changepassword",userController.changepassword)
+
 
 //enquiry routes
 routes.post("enquiry/add",enquiryController.add)

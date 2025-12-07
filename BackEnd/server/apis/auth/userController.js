@@ -136,4 +136,82 @@ const login=(req,res)=>{
         })
     }
 }
-module.exports={register,login}
+const changepassword=(req,res)=>{
+    var errMsg=[]
+    if(!req.body._id){
+        errMsg.push("id is required")
+    }
+    if(!req.body.oldpassword){
+        errMsg.push("old password is required")
+    }
+    if(!req.body.newpassword){
+        errMsg.push("newpassword is required")
+    }
+    if(!req.body.confirmpassword){
+        errMsg.push("confirmpassword is required")
+    }
+    if(errMsg.length>0){
+        res.send({
+            status:500,
+            success:false,
+            message:errMsg
+        })
+    }
+    else{
+        //new and confirm password code
+        if(newpassword==confirmpassword){
+            userModel.findOne({_id:req.body._id})
+            .then((userdata)=>{
+                if(userdata==null){
+                     res.send({
+                        status:404,
+                        success:false,
+                        message:"user not found"
+                    })
+                }
+                else{
+                    //old password and user password compare
+                    bcrypt.compare(req.body.oldpassword,userdata.password,function(err,isMatch){
+                        if(!isMatch){
+                            res.send({
+                                status:422,
+                                success:false,
+                                message:"old password do not match"
+                            })   
+                        }
+                        else{
+                            //update password
+                            userdata.password=bcrypt.hashSync(req.body.confirmpassword,salt)
+                            userdata.save()
+                            .then((updatepassword)=>{
+                                res.send({
+                                    status:200,
+                                    success:true,
+                                    message:"password updated"
+                                })
+                            })
+                            .catch(()=>{
+                                res.send({
+                                            status:422,
+                                            success:false,
+                                            message:"something went wrong"
+                                        })
+                            })
+                        }
+                    })
+                }
+            })
+            .catch(()=>{
+                res.send({
+                    status:422,
+                    success:false,
+                    message:"something went wrong"
+                })
+            })
+        }
+    }
+
+
+}
+
+module.exports={register,login,changepassword}
