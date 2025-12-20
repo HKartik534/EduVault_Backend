@@ -121,7 +121,8 @@ const login=(req,res)=>{
                             status:200,
                             success:true,
                             message:"Login successfull",
-                            token
+                            token,
+                            userdata
                         })
                     }
                 })
