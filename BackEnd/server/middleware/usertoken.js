@@ -19,16 +19,16 @@ module.exports=(req,res,next)=>{
                 })
             }
             else{
-               if(data.userType==1){
-                next()
-               }
-               else{
-                res.send({
-                    status:403,
-                    success:false,
-                    message:"Unauthorized user"
-                })
-               }
+                if(data.userType==2){
+                    next()
+                }
+                else{
+                    res.send({
+                        status:403,
+                        success:false,
+                        message:"Unauthorized user abc"
+                    })
+                }
             }
         })
     }

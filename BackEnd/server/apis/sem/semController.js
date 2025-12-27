@@ -198,9 +198,7 @@ const update=(req,res)=>{
 const changestatus=(req,res)=>{
     semModel.findOne({_id:req.body._id})
     .then((bookdata)=>{
-        if(req.body.status){
-            bookdata.status=req.body.status
-        }
+       bookdata.status=!bookdata.status
         bookdata.save()
         .then((bookdata)=>{
             res.send({

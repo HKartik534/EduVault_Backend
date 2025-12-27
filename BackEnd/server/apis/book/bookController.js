@@ -1,14 +1,9 @@
+const { uploadImg } = require("../../utilities/helper")
 const bookModel=require("./bookModel")
 const add=(req,res)=>{
     var errMsg=[]
     if(!req.body.name){
         errMsg.push("Name is required")
-    }
-    if(!req.body.type){
-        errMsg.push("image is required")
-    }
-    if(!req.file){
-        errMsg.push("file is required")
     }
     if(!req.body.description){
         errMsg.push("description is required")
@@ -49,6 +44,8 @@ const add=(req,res)=>{
                                 bookobj.image = url
                             }
                             catch(err){
+                                console.log(err);
+                                
                                 res.send({
                                     status:400,
                                     success:false,
@@ -256,9 +253,7 @@ const update=(req,res)=>{
 const changestatus=(req,res)=>{
     bookModel.findOne({_id:req.body._id})
     .then((bookdata)=>{
-        if(req.body.status){
-            bookdata.status=req.body.status
-        }
+       bookdata.status=!bookdata.status
         bookdata.save()
         .then((bookdata)=>{
             res.send({

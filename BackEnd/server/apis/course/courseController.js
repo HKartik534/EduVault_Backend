@@ -175,17 +175,28 @@ const getpagination = (req, res) => {
 }
 const update = (req, res) => {
     courseModel.findOne({ _id: req.body._id })
-        .then((bookdata) => {
+        .then( async (bookdata) => {
             if (req.body.name) {
                 bookdata.name = req.body.name
             }
-            if (req.body.image) {
-                bookdata.image = req.body.image
-            }
-
             if (req.body.description) {
                 bookdata.description = req.body.description
             }
+             if (req.file) {
+                        try {
+                            // code try
+                            let url = await uploadImg(req.file.buffer)
+                            bookdata.image = url
+                        }
+                        catch (err) {
+                            res.send({
+                                status: 400,
+                                success: false,
+                                message: err
+                            })
+
+                        }
+                    }
             bookdata.save()
                 .then((bookdata) => {
                     res.send({

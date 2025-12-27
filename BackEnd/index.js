@@ -9,7 +9,9 @@ seeder.adminreg()
 const cors=require("cors")
 app.use(cors())
 const apiroutes = require("./server/routes/apiroutes")
+const user=require("./server/routes/user")
 app.use("/apis",apiroutes)
+app.use("/user",user)
 app.listen(5000,(err)=>{
     if(err!=null){
         console.log("Error while connecting databse",err);
