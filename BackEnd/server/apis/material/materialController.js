@@ -1,3 +1,4 @@
+const { uploadImg } = require("../../utilities/helper")
 const materialModel=require("./materialModel")
 const add=(req,res)=>{
     var errMsg=[]
@@ -18,7 +19,7 @@ const add=(req,res)=>{
         })
     }
     else{
-       materialModel.findOne({name:req.body.name})
+       materialModel.findOne({title:req.body.title})
         .then(async(coursedata)=>{
             if(coursedata==null){
                  let materialobj=new materialModel()

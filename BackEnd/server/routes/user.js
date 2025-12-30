@@ -34,7 +34,7 @@ routes.post("/sem/single",semController.getsingle)
 routes.post("/sem/pagination",semController.getpagination)
 
 //material routes
-routes.post("/material/add",upload.single("image"),materialController.add)
+routes.post("/material/user/add",upload.single("attachment"),materialController.add)
 routes.post("/material/all",materialController.getall)
 routes.post("/material/single",materialController.getsingle)
 routes.post("/material/pagination",materialController.getpagination)
