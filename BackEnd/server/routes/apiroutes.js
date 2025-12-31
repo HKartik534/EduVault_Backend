@@ -57,6 +57,11 @@ routes.post("/material/delete",materialController.deleteOne)
 
 //user routes
 routes.post("/user/changepassword",userController.changepassword)
+routes.post("/user/all",userController.getall)
+routes.post("/user/single",userController.single)
+routes.post("/user/status",userController.changestatus)
+
+
 
 
 //enquiry routes

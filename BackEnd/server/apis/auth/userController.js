@@ -214,5 +214,123 @@ const changepassword=(req,res)=>{
 
 
 }
+const getall=(req,res)=>{
+    userModel.find()
+    .then((userdata)=>{
+        if(userdata==null){
+            res.send({
+                status:404,
+                success:false,
+                message:"user do not exist"
+            })
+        }
+        else{
+            res.send({
+                status:200,
+                success:true,
+                message:"user data loaded successfully",
+                userdata
+            })
+        }
+    })
+    .catch(()=>{
+        res.send({
+            status:500,
+            success:false,
+            message:"something went wrong"
+        })
+    })
+}
+const single=(req,res)=>{
+    var errMsg=[]
+    if(!req.body._id){
+        errMsg.push("Id is required")
+    }
+    if(errMsg.length>0){
+        res.send({
+            status:422,
+            success:false,
+            message:errMsg
+        })
+    }
+    else{
+        userModel.findOne({_id:req.body._id})
+        .then((userdata)=>{
+            if(userdata==null){
+                res.send({
+                    status:404,
+                    success:false,
+                    message:"user do not exist"
+                })
+            }
+            else{
+                res.send({
+                    status:200,
+                    success:true,
+                    message:"data loaded successfully",
+                    userdata
+                })
+            }
+        })
+        .catch(()=>{
+            res.send({
+                status:500,
+                success:false,
+                message:"something wnet wrong"
+            })
+        })
+    }
+}
+const changestatus=(req,res)=>{
+     var errMsg=[]
+    if(!req.body._id){
+        errMsg.push("Id is required")
+    }
+    if(errMsg.length>0){
+        res.send({
+            status:422,
+            success:false,
+            message:errMsg
+        })
+    }
+    else{
+        userModel.findOne({_id:req.body._id})
+        .then((userdata)=>{
+            if(userdata==null){
+                res.send({
+                    status:404,
+                    success:false,
+                    message:"user do not exist"
+                })
+            }
+            else{
+                userdata.status=!userdata.status
+                userdata.save()
+                .then((userdata)=>{
+                    res.send({
+                        status:200,
+                        success:true,
+                        message:"status changed successfully",
+                        userdata
+                    })
+                })
+                .catch(()=>{
+                     res.send({
+                    status:500,
+                    success:false,
+                    message:"something went wrong while changing status"
+                })
+                })
+            }
+        })
+        .catch(()=>{
+            res.send({
+                status:500,
+                success:false,
+                message:"something went wrong"
+            })
+        })
+    }
 
-module.exports={register,login,changepassword}
+}
+module.exports={register,login,changepassword,getall,single,changestatus}
