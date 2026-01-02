@@ -49,6 +49,7 @@ const add = (req, res) => {
                     }
                     //    materialobj.attachment="material/"+req.file.filename
                     materialobj.description = req.body.description
+                    materialobj.type=req.body.type
                     materialobj.save()
                         .then((coursedata) => {
                             res.send({
@@ -181,16 +182,36 @@ const getpagination = (req, res) => {
 }
 const update = (req, res) => {
     materialModel.findOne({ _id: req.body._id })
-        .then((bookdata) => {
+        .then(async (bookdata) => {
             if (req.body.title) {
                 bookdata.title = req.body.title
             }
-            if (req.body.attachment) {
-                bookdata.attachment = req.body.attachment
-            }
-
             if (req.body.description) {
                 bookdata.description = req.body.description
+            }
+            if (req.body.type) {
+                bookdata.type = req.body.type
+            }
+            if (req.body.courseId) {
+                bookdata.courseId = req.body.courseId
+            }
+            if (req.body.semId) {
+                bookdata.semId = req.body.semId
+            }
+            if (req.file) {
+                try {
+                    // code try
+                    let url = await uploadImg(req.file.buffer)
+                    bookdata.attachment = url
+                }
+                catch (err) {
+                    res.send({
+                        status: 400,
+                        success: false,
+                        message: err
+                    })
+
+                }
             }
             bookdata.save()
                 .then((bookdata) => {
@@ -209,20 +230,19 @@ const update = (req, res) => {
                     })
                 })
         })
-        .catch(() => {
+        .catch((err) => {
             res.send({
                 status: 500,
                 success: false,
-                message: "something went wrong"
+                message: "something went wrong",
+                err
             })
         })
 }
 const changestatus = (req, res) => {
     materialModel.findOne({ _id: req.body._id })
         .then((bookdata) => {
-            if (req.body.status) {
-                bookdata.status = req.body.status
-            }
+            bookdata.status = !bookdata.status
             bookdata.save()
                 .then((bookdata) => {
                     res.send({

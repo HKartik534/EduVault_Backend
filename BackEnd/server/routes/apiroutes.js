@@ -46,11 +46,11 @@ routes.post("/sem/status",semController.changestatus)
 routes.post("/sem/delete",semController.deleteOne)
 
 //material routes
-routes.post("/material/add",upload.single("image"),materialController.add)
+routes.post("/material/add",upload.single("attachment"),materialController.add)
 routes.post("/material/all",materialController.getall)
 routes.post("/material/single",materialController.getsingle)
 routes.post("/material/pagination",materialController.getpagination)
-routes.post("/material/update",materialController.update)
+routes.post("/material/update",upload.single("attachment"),materialController.update)
 routes.post("/material/status",materialController.changestatus)
 routes.post("/material/delete",materialController.deleteOne)
 
