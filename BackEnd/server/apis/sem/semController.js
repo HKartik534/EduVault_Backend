@@ -61,7 +61,7 @@ const add=(req,res)=>{
 
 }
 const getall=(req,res)=>{
-    semModel.find()
+    semModel.find(req.body)
     .populate("courseId")
     .then((bookdata)=>{
         if(bookdata==null){

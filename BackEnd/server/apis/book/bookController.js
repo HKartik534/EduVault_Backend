@@ -89,7 +89,7 @@ const add=(req,res)=>{
 
 }
 const getall=(req,res)=>{
-    bookModel.find()
+    bookModel.find(req.body)
     .populate("courseId")
     .populate("semId")
     .then((bookdata)=>{
