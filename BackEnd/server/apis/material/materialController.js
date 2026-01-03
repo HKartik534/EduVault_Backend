@@ -85,7 +85,7 @@ const add = (req, res) => {
 
 }
 const getall = (req, res) => {
-    materialModel.find()
+    materialModel.find(req.body)
         .then((bookdata) => {
             if (bookdata == null) {
                 res.send({
