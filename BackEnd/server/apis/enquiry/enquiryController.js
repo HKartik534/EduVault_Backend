@@ -38,7 +38,8 @@ const add=(req,res)=>{
                             res.send({
                                 status:200,
                                 success:true,
-                                message:"enquiry added successfully"
+                                message:"enquiry added successfully",
+                                bookdata
                             })
                         })
                         .catch((err)=>{
@@ -67,7 +68,33 @@ const add=(req,res)=>{
     }
 
 }
-//update and change status
+const getall=(req,res)=>{
+    enquiryModel.find()
+    .then((enquirydata)=>{
+        if(enquirydata==null){
+            res.send({
+                status:404,
+                success:false,
+                message:"No Enquiry exist"
+            })
+        }
+        else{
+            res.send({
+                status:200,
+                success:true,
+                message:"Enquiry data loaded",
+                enquirydata
+            })
+        }
+    })
+    .catch((err)=>{
+         res.send({
+                status:500,
+                success:false,
+                message:err
+            })
+    })
+}
 const update=(req,res)=>{
     enquiryModel.findOne({_id:req.body._id})
     .then((bookdata)=>{
@@ -114,9 +141,7 @@ const update=(req,res)=>{
 const changestatus=(req,res)=>{
     enquiryModel.findOne({_id:req.body._id})
     .then((bookdata)=>{
-        if(req.body.status){
-            bookdata.status=req.body.status
-        }
+       bookdata.status=!bookdata.status
         bookdata.save()
         .then((bookdata)=>{
             res.send({
@@ -142,5 +167,32 @@ const changestatus=(req,res)=>{
         })
     })
 }
+const deleteOne=(req,res)=>{
+    enquiryModel.findOne({_id:req.body._id})
+    .then(()=>{
+        enquiryModel.deleteOne({_id:req.body._id})
+        .then((deleteenquiry)=>{
+            res.send({
+                status:200,
+                success:true,
+                message:"Enquiry deleted successfully"
+            })
+        })
+        .catch(()=>{
+            res.send({
+                status:422,
+                success:false,
+                message:"something went wrong"
+            })
+        })
+    })
+    .catch(()=>{
+        res.send({
+            status:500,
+            success:false,
+            message:"something went wrong"
+        })
+    })
+}
 
-module.exports={add,update,changestatus}
+module.exports={add,update,changestatus,getall,deleteOne}

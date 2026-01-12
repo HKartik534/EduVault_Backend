@@ -65,9 +65,12 @@ routes.post("/user/status",userController.changestatus)
 
 
 //enquiry routes
-routes.post("enquiry/add",enquiryController.add)
-routes.post("enquiry/update",enquiryController.update)
-routes.post("enquiry/status",enquiryController.changestatus)
+routes.post("/enquiry/add",enquiryController.add)
+routes.post("/enquiry/all",enquiryController.getall)
+routes.post("/enquiry/update",enquiryController.update)
+routes.post("/enquiry/status",enquiryController.changestatus)
+routes.post("/enquiry/delete",enquiryController.deleteOne)
+
 
 
 module.exports=routes

@@ -44,8 +44,9 @@ routes.post("/material/update",materialController.update)
 routes.post("/user/changepassword",userController.changepassword)
 
 //enquiry routes
-routes.post("enquiry/add",enquiryController.add)
-routes.post("enquiry/update",enquiryController.update)
+routes.post("/enquiry/add",enquiryController.add)
+routes.post("/enquiry/all",enquiryController.getall)
+
 
 
 module.exports=routes
