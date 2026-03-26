@@ -13,7 +13,7 @@ const uploadImg = async (fileBuffer, publicId) => {
         cloudinary.uploader.upload_stream(
             {
                 public_id: publicId,
-                resource_type: "auto" },
+                resource_type: "auto"},
             (error, result) => {
                 if (error) {
                     reject(error);

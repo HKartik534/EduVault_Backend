@@ -37,11 +37,13 @@ const add=(req,res)=>{
                         bookobj.courseId=req.body.courseId
                         bookobj.semId=req.body.semId
                         // bookobj.image="book/"+req.file.filename
-                         if(req.file){
+                         if(req.files){
                             try{
                                     // code try
-                                let url =await uploadImg(req.file.buffer)
+                                let url =await uploadImg(req.files.image[0].buffer)
                                 bookobj.image = url
+                                let url2 = await uploadImg(req.files.bookFile[0].buffer)
+                                bookobj.bookFile=url2
                             }
                             catch(err){
                                 console.log(err);
@@ -59,7 +61,8 @@ const add=(req,res)=>{
                             res.send({
                                 status:200,
                                 success:true,
-                                message:"book added successfully"
+                                message:"book added successfully",
+                                bookdata
                             })
                         })
                         .catch((err)=>{

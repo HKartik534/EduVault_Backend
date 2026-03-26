@@ -5,6 +5,7 @@ const bookSchema= new mongoose.Schema({
     name:{type:String,default:""},
     type:{type:String,default:""},
     image:{type:String,default:"noimage.jpg"},
+    bookFile:{type:String,default:""},
     price:{type:String,default:""},
     description:{type:String,default:""},
     status:{type:Boolean,default:true},

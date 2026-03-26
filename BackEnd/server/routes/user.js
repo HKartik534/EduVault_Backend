@@ -9,6 +9,7 @@ const materialController=require("../apis/material/materialController")
 const userController=require("../apis/auth/userController")
 const enquiryController=require("../apis/enquiry/enquiryController")
 
+
 //auth routes
 routes.post("/user/add",userController.register)
 routes.post("/user/login",userController.login)
@@ -22,7 +23,7 @@ routes.post("/course/single",courseController.getsingle)
 routes.post("/course/pagination",courseController.getpagination)
 
 //book routes
-routes.post("/book/add",upload.single("image"),bookController.add)
+routes.post("/book/add",upload.fields([{name:"image",maxCount:1},{name:"bookFile",maxCount:1}]),bookController.add)
 routes.post("/book/all",bookController.getall)
 routes.post("/book/single",bookController.getsingle)
 routes.post("/book/pagination",bookController.getpagination)
