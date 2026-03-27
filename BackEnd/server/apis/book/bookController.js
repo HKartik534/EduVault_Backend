@@ -1,4 +1,4 @@
-const { uploadImg } = require("../../utilities/helper")
+const uploadImg=require("../../utilities/helper")
 const bookModel=require("./bookModel")
 const add=(req,res)=>{
     var errMsg=[]
@@ -41,9 +41,9 @@ const add=(req,res)=>{
                             try{
                                     // code try
                                 let url =await uploadImg(req.files.image[0].buffer)
-                                bookobj.image = url
+                                bookobj.image = url.url
                                 let url2 = await uploadImg(req.files.bookFile[0].buffer)
-                                bookobj.bookFile=url2
+                                bookobj.bookFile=url2.url
                             }
                             catch(err){
                                 console.log(err);
@@ -212,11 +212,14 @@ const update=(req,res)=>{
         if(req.body.description){
             bookdata.description=req.body.description
         }
-         if(req.body.image){
+         if(req.body.files){
             try{
                                     // code try
-                                let url =await uploadImg(req.file.buffer)
-                                bookobj.image = url
+                                let Imagefile =await uploadImg(req.files.image[0].buffer)
+                                bookobj.image = Imagefile.url
+                                let bookFile = await uploadImg(req.files.bookFile[0].buffer)
+                                bookobj.bookFile=bookFile.url
+                                
                             }
                             catch(err){
                                 res.send({

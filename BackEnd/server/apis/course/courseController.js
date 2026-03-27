@@ -1,5 +1,5 @@
 const courseModel = require("./courseModel")
-const { uploadImg } = require("../../utilities/helper")
+const uploadImg = require("../../utilities/helper")
 const add = (req, res) => {
     var errMsg = []
     if (!req.body.name) {
@@ -29,7 +29,7 @@ const add = (req, res) => {
                         try {
                             // code try
                             let url = await uploadImg(req.file.buffer)
-                            courseobj.image = url
+                            courseobj.image = url.url
                         }
                         catch (err) {
                             res.send({
@@ -182,11 +182,11 @@ const update = (req, res) => {
             if (req.body.description) {
                 bookdata.description = req.body.description
             }
-             if (req.file) {
+             if (req.body.file) {
                         try {
                             // code try
                             let url = await uploadImg(req.file.buffer)
-                            bookdata.image = url
+                            bookdata.image = url.url
                         }
                         catch (err) {
                             res.send({

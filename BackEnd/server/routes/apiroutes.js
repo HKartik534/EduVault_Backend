@@ -28,11 +28,11 @@ routes.post("/course/delete",courseController.deleteOne)
 
 
 //book routes
-routes.post("/book/add",upload.single("image"),bookController.add)
+routes.post("/book/add",upload.fields([{name:"image",maxCount:1},{name:"bookFile"}]),bookController.add)
 routes.post("/book/all",bookController.getall)
 routes.post("/book/single",bookController.getsingle)
 routes.post("/book/pagination",bookController.getpagination)
-routes.post("/book/update",upload.single("image"),bookController.update)
+routes.post("/book/update",upload.fields([{name:"image",maxCount:1},{name:"bookFile"}]),bookController.update)
 routes.post("/book/status",bookController.changestatus)
 routes.post("/book/delete",bookController.deleteOne)
 

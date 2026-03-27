@@ -1,4 +1,4 @@
-const { uploadImg } = require("../../utilities/helper")
+const uploadImg = require("../../utilities/helper")
 const materialModel = require("./materialModel")
 const add = (req, res) => {
     var errMsg = []
@@ -36,7 +36,7 @@ const add = (req, res) => {
                         try {
                             // code try
                             let url = await uploadImg(req.file.buffer)
-                            materialobj.attachment = url
+                            materialobj.attachment = url.url
                         }
                         catch (err) {
                             res.send({
@@ -198,11 +198,11 @@ const update = (req, res) => {
             if (req.body.semId) {
                 bookdata.semId = req.body.semId
             }
-            if (req.file) {
+            if (req.body.file) {
                 try {
                     // code try
                     let url = await uploadImg(req.file.buffer)
-                    bookdata.attachment = url
+                    bookdata.attachment = url.url
                 }
                 catch (err) {
                     res.send({

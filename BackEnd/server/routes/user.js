@@ -23,11 +23,11 @@ routes.post("/course/single",courseController.getsingle)
 routes.post("/course/pagination",courseController.getpagination)
 
 //book routes
-routes.post("/book/add",upload.fields([{name:"image",maxCount:1},{name:"bookFile",maxCount:1}]),bookController.add)
+routes.post("/book/add",upload.fields([{name:"image",maxCount:1},{name:"bookFile"}]),bookController.add)
 routes.post("/book/all",bookController.getall)
 routes.post("/book/single",bookController.getsingle)
 routes.post("/book/pagination",bookController.getpagination)
-routes.post("/book/update",upload.single("image"),bookController.update)
+routes.post("/book/update",upload.fields([{name:"image",maxCount:1},{name:"bookFile"}]),bookController.update)
 
 //sem routes
 routes.post("/sem/all",semController.getall)
@@ -39,7 +39,7 @@ routes.post("/material/user/add",upload.single("attachment"),materialController.
 routes.post("/material/all",materialController.getall)
 routes.post("/material/single",materialController.getsingle)
 routes.post("/material/pagination",materialController.getpagination)
-routes.post("/material/update",materialController.update)
+routes.post("/material/update",upload.single("attachment"),materialController.update)
 
 //user routes
 routes.post("/user/changepassword",userController.changepassword)
