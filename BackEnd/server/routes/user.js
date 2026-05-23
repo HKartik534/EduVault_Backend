@@ -14,6 +14,7 @@ const enquiryController=require("../apis/enquiry/enquiryController")
 routes.post("/user/add",userController.register)
 routes.post("/user/login",userController.login)
 
+
 //token routes
 routes.use(require("../middleware/usertoken"))
 

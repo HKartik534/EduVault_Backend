@@ -1,336 +1,394 @@
-const userModel=require("./userModel")
-const bcrypt=require("bcrypt")
-const jwt=require("jsonwebtoken")
-const key="123@#123"
-var salt=10
-const register=(req,res)=>{
-    var errMsg=[]
-    if(!req.body.name){
+const userModel = require("./userModel")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const key = process.env.JWTKEY
+var salt = 10
+const nodemailer = require('nodemailer')
+
+const register = (req, res) => {
+    var errMsg = []
+    if (!req.body.name) {
         errMsg.push("name is required")
     }
-    if(!req.body.email){
+    if (!req.body.email) {
         errMsg.push("email is required")
     }
-    if(!req.body.password){
+    if (!req.body.password) {
         errMsg.push("password is required")
     }
-    if(!req.body.contact){
+    if (!req.body.contact) {
         errMsg.push("contact is required")
-    }if(!req.body.address){
+    } if (!req.body.address) {
         errMsg.push("address is required")
     }
-    if(errMsg.length>0){
+    if (errMsg.length > 0) {
         res.send({
-            status:422,
-            success:false,
-            message:errMsg
+            status: 422,
+            success: false,
+            message: errMsg
         })
     }
-    else{
-        userModel.findOne({email:req.body.email})
-        .then((userdata)=>{
-            if(userdata==null){
-                //add user
-                let userobj=new userModel()
-                userobj.name=req.body.name
-                userobj.email=req.body.email
-                userobj.password=bcrypt.hashSync(req.body.password,salt)
-                userobj.userType=2
-                userobj.contact=req.body.contact
-                userobj.address=req.body.address
-                userobj.save()
-                .then((userdata)=>{
-                    res.send({
-                        status:200,
-                        success:true,
-                        message:"user added successfully"
-                    })
-                })
-                .catch(()=>{
-                    res.send({
-                        status:500,
-                        success:false,
-                        message:"something went wrong"
-                    })
-                })
+    else {
+        userModel.findOne({ email: req.body.email })
+            .then((userdata) => {
+                if (userdata == null) {
+                    //add user
+                    let userobj = new userModel()
+                    userobj.name = req.body.name
+                    userobj.email = req.body.email
+                    userobj.password = bcrypt.hashSync(req.body.password, salt)
+                    userobj.userType = 2
+                    userobj.contact = req.body.contact
+                    userobj.address = req.body.address
+                    userobj.save()
+                        .then((userdata) => {
+                            res.send({
+                                status: 200,
+                                success: true,
+                                message: "user added successfully"
+                            })
+                        })
+                        .catch(() => {
+                            res.send({
+                                status: 500,
+                                success: false,
+                                message: "something went wrong"
+                            })
+                        })
 
-            }
-            else{
-                res.send({
-                    status:404,
-                    success:false,
-                    message:"email already exist"
-                })
-            }
-        })
-        .catch(()=>{
-            res.send({
-                status:500,
-                success:false,
-                message:"something went wrong"
+                }
+                else {
+                    res.send({
+                        status: 404,
+                        success: false,
+                        message: "email already exist"
+                    })
+                }
             })
-        })
+            .catch(() => {
+                res.send({
+                    status: 500,
+                    success: false,
+                    message: "something went wrong"
+                })
+            })
     }
 
 }
-const login=(req,res)=>{
-    var errMsg=[]
-    if(!req.body.email){
+const login = (req, res) => {
+    var errMsg = []
+    if (!req.body.email) {
         errMsg.push("email is required")
     }
-    if(!req.body.password){
+    if (!req.body.password) {
         errMsg.push("password is required")
     }
-    if(errMsg.length>0){
+    if (errMsg.length > 0) {
         res.send({
-            status:422,
-            success:false,
-            message:errMsg
+            status: 422,
+            success: false,
+            message: errMsg
         })
     }
-    else{
-        userModel.findOne({email:req.body.email})
-        .then((userdata)=>{
-            if(userdata==null){
-                res.send({
-                    status:404,
-                    success:false,
-                    message:"user do not exist"
-                })
-            }
-            else{
-                bcrypt.compare(req.body.password,userdata.password,function(err,isMatch){
-                    if(!isMatch){
-                        res.send({
-                            status:403,
-                            success:false,
-                            message:"invalid password"
-                        })
-                    }
-                    else{
-                        let payload={
-                            _id:userdata._id,
-                            name:userdata.name,
-                            email:userdata.email,
-                            address:userdata.address,
-                            contact:userdata.contact,
-                            userType:userdata.userType
+    else {
+        userModel.findOne({ email: req.body.email })
+            .then((userdata) => {
+                if (userdata == null) {
+                    res.send({
+                        status: 404,
+                        success: false,
+                        message: "user do not exist"
+                    })
+                }
+                else {
+                    bcrypt.compare(req.body.password, userdata.password, function (err, isMatch) {
+                        if (!isMatch) {
+                            res.send({
+                                status: 403,
+                                success: false,
+                                message: "invalid password"
+                            })
                         }
-                        let token=jwt.sign(payload,key)
-                        res.send({
-                            status:200,
-                            success:true,
-                            message:"Login successfull",
-                            token,
-                            userdata
-                        })
-                    }
-                })
-            }
-        })
-        .catch(()=>{
-            res.send({
-                status:500,
-                success:false,
-                message:"something went worng"
+                        else {
+                            let payload = {
+                                _id: userdata._id,
+                                name: userdata.name,
+                                email: userdata.email,
+                                address: userdata.address,
+                                contact: userdata.contact,
+                                userType: userdata.userType
+                            }
+                            let token = jwt.sign(payload, key)
+                            res.send({
+                                status: 200,
+                                success: true,
+                                message: "Login successfull",
+                                token,
+                                userdata
+                            })
+                        }
+                    })
+                }
             })
-        })
+            .catch(() => {
+                res.send({
+                    status: 500,
+                    success: false,
+                    message: "something went worng"
+                })
+            })
     }
 }
-const changepassword=(req,res)=>{
-    var errMsg=[]
-    if(!req.body._id){
+const changepassword = (req, res) => {
+    var errMsg = []
+    if (!req.body._id) {
         errMsg.push("id is required")
     }
-    if(!req.body.oldpassword){
+    if (!req.body.oldpassword) {
         errMsg.push("old password is required")
     }
-    if(!req.body.newpassword){
+    if (!req.body.newpassword) {
         errMsg.push("newpassword is required")
     }
-    if(!req.body.confirmpassword){
+    if (!req.body.confirmpassword) {
         errMsg.push("confirmpassword is required")
     }
-    if(errMsg.length>0){
+    if (errMsg.length > 0) {
         res.send({
-            status:500,
-            success:false,
-            message:errMsg
+            status: 500,
+            success: false,
+            message: errMsg
         })
     }
-    else{
+    else {
         //new and confirm password code
-        if(newpassword==confirmpassword){
-            userModel.findOne({_id:req.body._id})
-            .then((userdata)=>{
-                if(userdata==null){
-                     res.send({
-                        status:404,
-                        success:false,
-                        message:"user not found"
-                    })
-                }
-                else{
-                    //old password and user password compare
-                    bcrypt.compare(req.body.oldpassword,userdata.password,function(err,isMatch){
-                        if(!isMatch){
-                            res.send({
-                                status:422,
-                                success:false,
-                                message:"old password do not match"
-                            })   
-                        }
-                        else{
-                            //update password
-                            userdata.password=bcrypt.hashSync(req.body.confirmpassword,salt)
-                            userdata.save()
-                            .then((updatepassword)=>{
+        if (newpassword == confirmpassword) {
+            userModel.findOne({ _id: req.body._id })
+                .then((userdata) => {
+                    if (userdata == null) {
+                        res.send({
+                            status: 404,
+                            success: false,
+                            message: "user not found"
+                        })
+                    }
+                    else {
+                        //old password and user password compare
+                        bcrypt.compare(req.body.oldpassword, userdata.password, function (err, isMatch) {
+                            if (!isMatch) {
                                 res.send({
-                                    status:200,
-                                    success:true,
-                                    message:"password updated"
+                                    status: 422,
+                                    success: false,
+                                    message: "old password do not match"
                                 })
-                            })
-                            .catch(()=>{
-                                res.send({
-                                            status:422,
-                                            success:false,
-                                            message:"something went wrong"
+                            }
+                            else {
+                                //update password
+                                userdata.password = bcrypt.hashSync(req.body.confirmpassword, salt)
+                                userdata.save()
+                                    .then((updatepassword) => {
+                                        res.send({
+                                            status: 200,
+                                            success: true,
+                                            message: "password updated"
                                         })
-                            })
-                        }
-                    })
-                }
-            })
-            .catch(()=>{
-                res.send({
-                    status:422,
-                    success:false,
-                    message:"something went wrong"
+                                    })
+                                    .catch(() => {
+                                        res.send({
+                                            status: 422,
+                                            success: false,
+                                            message: "something went wrong"
+                                        })
+                                    })
+                            }
+                        })
+                    }
                 })
-            })
+                .catch(() => {
+                    res.send({
+                        status: 422,
+                        success: false,
+                        message: "something went wrong"
+                    })
+                })
         }
     }
 
 
 }
-const getall=(req,res)=>{
+const getall = (req, res) => {
     userModel.find()
-    .then((userdata)=>{
-        if(userdata==null){
-            res.send({
-                status:404,
-                success:false,
-                message:"user do not exist"
-            })
-        }
-        else{
-            res.send({
-                status:200,
-                success:true,
-                message:"user data loaded successfully",
-                userdata
-            })
-        }
-    })
-    .catch(()=>{
-        res.send({
-            status:500,
-            success:false,
-            message:"something went wrong"
-        })
-    })
-}
-const single=(req,res)=>{
-    var errMsg=[]
-    if(!req.body._id){
-        errMsg.push("Id is required")
-    }
-    if(errMsg.length>0){
-        res.send({
-            status:422,
-            success:false,
-            message:errMsg
-        })
-    }
-    else{
-        userModel.findOne({_id:req.body._id})
-        .then((userdata)=>{
-            if(userdata==null){
+        .then((userdata) => {
+            if (userdata == null) {
                 res.send({
-                    status:404,
-                    success:false,
-                    message:"user do not exist"
+                    status: 404,
+                    success: false,
+                    message: "user do not exist"
                 })
             }
-            else{
+            else {
                 res.send({
-                    status:200,
-                    success:true,
-                    message:"data loaded successfully",
+                    status: 200,
+                    success: true,
+                    message: "user data loaded successfully",
                     userdata
                 })
             }
         })
-        .catch(()=>{
+        .catch(() => {
             res.send({
-                status:500,
-                success:false,
-                message:"something wnet wrong"
+                status: 500,
+                success: false,
+                message: "something went wrong"
             })
         })
-    }
 }
-const changestatus=(req,res)=>{
-     var errMsg=[]
-    if(!req.body._id){
+const single = (req, res) => {
+    var errMsg = []
+    if (!req.body._id) {
         errMsg.push("Id is required")
     }
-    if(errMsg.length>0){
+    if (errMsg.length > 0) {
         res.send({
-            status:422,
-            success:false,
-            message:errMsg
+            status: 422,
+            success: false,
+            message: errMsg
         })
     }
-    else{
-        userModel.findOne({_id:req.body._id})
-        .then((userdata)=>{
-            if(userdata==null){
-                res.send({
-                    status:404,
-                    success:false,
-                    message:"user do not exist"
-                })
-            }
-            else{
-                userdata.status=!userdata.status
-                userdata.save()
-                .then((userdata)=>{
+    else {
+        userModel.findOne({ _id: req.body._id })
+            .then((userdata) => {
+                if (userdata == null) {
                     res.send({
-                        status:200,
-                        success:true,
-                        message:"status changed successfully",
+                        status: 404,
+                        success: false,
+                        message: "user do not exist"
+                    })
+                }
+                else {
+                    res.send({
+                        status: 200,
+                        success: true,
+                        message: "data loaded successfully",
                         userdata
                     })
-                })
-                .catch(()=>{
-                     res.send({
-                    status:500,
-                    success:false,
-                    message:"something went wrong while changing status"
-                })
-                })
-            }
-        })
-        .catch(()=>{
-            res.send({
-                status:500,
-                success:false,
-                message:"something went wrong"
+                }
             })
+            .catch(() => {
+                res.send({
+                    status: 500,
+                    success: false,
+                    message: "something wnet wrong"
+                })
+            })
+    }
+}
+const changestatus = (req, res) => {
+    var errMsg = []
+    if (!req.body._id) {
+        errMsg.push("Id is required")
+    }
+    if (errMsg.length > 0) {
+        res.send({
+            status: 422,
+            success: false,
+            message: errMsg
         })
+    }
+    else {
+        userModel.findOne({ _id: req.body._id })
+            .then((userdata) => {
+                if (userdata == null) {
+                    res.send({
+                        status: 404,
+                        success: false,
+                        message: "user do not exist"
+                    })
+                }
+                else {
+                    userdata.status = !userdata.status
+                    userdata.save()
+                        .then((userdata) => {
+                            res.send({
+                                status: 200,
+                                success: true,
+                                message: "status changed successfully",
+                                userdata
+                            })
+                        })
+                        .catch(() => {
+                            res.send({
+                                status: 500,
+                                success: false,
+                                message: "something went wrong while changing status"
+                            })
+                        })
+                }
+            })
+            .catch(() => {
+                res.send({
+                    status: 500,
+                    success: false,
+                    message: "something went wrong"
+                })
+            })
     }
 
 }
-module.exports={register,login,changepassword,getall,single,changestatus}
+const otpGeneration = (req, res) => {
+    userModel.findOne({ email: req.body.email })
+        .then(async (userdata) => {
+            if (userdata == null) {
+                res.send({
+                    status: 404,
+                    success: false,
+                    message: "Enter valid email"
+                })
+            }
+            else {
+                //generate otp logic
+                const randomOtp = Math.ceil(Math.random() * 1000000)
+
+                //nodemailer code
+                // Create a transporter using SMTP
+                const transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 587,
+                    secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
+                    auth: {
+                        user: "kartikhj12345@gmail.com",
+                        pass: process.env.NODEMAILERPASS
+                    },
+                });
+
+                //Email sending logic
+                ; (async () => {
+                    const info = await transporter.sendMail({
+                        from: '"Kartik" <kartikhj12345@gmail.com>',
+                        to: req.body.email,
+                        subject: "Otp for changing password",
+                        text: `Otp is`, // plain‑text body
+                        html: `<h5>${randomOtp}</h5>`,
+
+                    });
+                    console.log("Message sent:", info.messageId);
+                })();
+
+                res.send({
+                    status: 200,
+                    success: true,
+                    message: "Otp has been sent to your email",
+                    userdata
+                })
+            }
+        })
+
+        .catch((err) => {
+            res.send({
+                status: 500,
+                success: false,
+                message: "Something wrong with findOne"
+            })
+        })
+}
+module.exports = { register, login, changepassword, getall, single, changestatus,  }

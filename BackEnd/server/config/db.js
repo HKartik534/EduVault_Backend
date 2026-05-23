@@ -1,5 +1,5 @@
 const mongoose=require("mongoose")
-mongoose.connect("mongodb://localhost:27017/projectDatabase")
+mongoose.connect(process.env.MONGOBDURL)
 .then(()=>{
     console.log("Database connected");   
 })
